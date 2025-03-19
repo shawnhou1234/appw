@@ -1,24 +1,21 @@
 // lib/firebase.ts
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getAnalytics, Analytics } from 'firebase/analytics';
+import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA39waPUGbDqo2v0uBQ8p1qCkNTuzwXOlc",
-  authDomain: "comedy-app-16e56.firebaseapp.com",
-  projectId: "comedy-app-16e56",
-  storageBucket: "comedy-app-16e56.firebasestorage.app",
-  messagingSenderId: "373742772556",
-  appId: "1:373742772556:web:1a484cf04006570fe96fe9",
-  measurementId: "G-KNCMNK8QSS"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-// Initialize Analytics only on the client side
-const analytics: Analytics | null = typeof window !== 'undefined' ? getAnalytics(app) : null;
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-export { auth, analytics };
+export { app, auth, db };
