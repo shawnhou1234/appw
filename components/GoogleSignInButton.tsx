@@ -12,7 +12,7 @@ const GoogleSignInButton: React.FC = () => {
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
-        router.push('/dashboard');
+        router.push('/recording');
       }
     } catch (error) {
       console.error('Google sign in error:', error);

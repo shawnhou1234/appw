@@ -21,7 +21,7 @@ const SignIn: NextPage = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard');
+      router.push('/recording');
     } catch (error: any) {
       setError(error.message);
     } finally {

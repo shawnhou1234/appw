@@ -32,7 +32,7 @@ const SignUp: NextPage = () => {
       await updateProfile(userCredential.user, {
         displayName: username
       });
-      router.push('/dashboard');
+      router.push('/recording');
     } catch (error: any) {
       setError(error.message);
     } finally {
