@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { auth, storage } from '../lib/firebase';
-import { ref, uploadBytes, getDownloadURL, listAll, deleteObject, getMetadata } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, listAll, deleteObject, getMetadata, updateMetadata } from 'firebase/storage';
 import { signOut } from 'firebase/auth';
 import RecordingButton from '../components/RecordingButton';
 import RecordingsList from '../components/RecordingsList';
@@ -20,7 +20,6 @@ const RecordingPage: React.FC = () => {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -47,9 +46,9 @@ const RecordingPage: React.FC = () => {
           return {
             id: item.name,
             url,
-            name: item.name.split('_')[0] || 'Recording',
+            name: metadata.customMetadata?.name || item.name.split('_')[0] || 'Recording',
             createdAt: new Date(metadata.timeCreated),
-            duration: 0, // You might want to store this in metadata
+            duration: parseInt(metadata.customMetadata?.duration || '0'),
           };
         })
       );
@@ -76,13 +75,48 @@ const RecordingPage: React.FC = () => {
       const fileName = `recording_${timestamp}.webm`;
       const storageRef = ref(storage, `audio/${user.uid}/${fileName}`);
       
+      // 获取音频时长
+      const audioContext = new AudioContext();
+      const arrayBuffer = await blob.arrayBuffer();
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      const duration = Math.round(audioBuffer.duration);
+      
+      // 上传文件
       await uploadBytes(storageRef, blob);
+      
+      // 更新元数据
+      const metadata = {
+        customMetadata: {
+          duration: duration.toString(),
+          name: 'New Recording'
+        }
+      };
+      await updateMetadata(storageRef, metadata);
+      
       await loadRecordings(user.uid);
     } catch (error) {
       console.error('Error uploading recording:', error);
       setError('Failed to upload recording');
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleRename = async (id: string, newName: string) => {
+    if (!user) return;
+
+    try {
+      const storageRef = ref(storage, `audio/${user.uid}/${id}`);
+      const metadata = {
+        customMetadata: {
+          name: newName
+        }
+      };
+      await updateMetadata(storageRef, metadata);
+      await loadRecordings(user.uid);
+    } catch (error) {
+      console.error('Error renaming recording:', error);
+      setError('Failed to rename recording');
     }
   };
 
@@ -96,13 +130,6 @@ const RecordingPage: React.FC = () => {
     } catch (error) {
       console.error('Error deleting recording:', error);
       setError('Failed to delete recording');
-    }
-  };
-
-  const handlePlay = (url: string) => {
-    if (audioRef.current) {
-      audioRef.current.src = url;
-      audioRef.current.play();
     }
   };
 
@@ -155,12 +182,11 @@ const RecordingPage: React.FC = () => {
           <RecordingsList
             recordings={recordings}
             onDelete={handleDelete}
-            onPlay={handlePlay}
+            onPlay={() => {}}
+            onRename={handleRename}
           />
         </div>
       </div>
-
-      <audio ref={audioRef} className="hidden" />
     </div>
   );
 };
