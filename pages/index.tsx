@@ -1,36 +1,39 @@
 import React from 'react';
-import type { NextPage } from 'next';
 import Link from 'next/link';
 
-const Home: NextPage = () => {
+const Home: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#FFFFFF] py-6 flex flex-col justify-center sm:py-12">
-      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="relative px-4 py-10 bg-[#FFFFFF] shadow-lg sm:rounded-3xl sm:p-20 border border-gray-100">
-          <div className="max-w-md mx-auto">
-            <div className="divide-y divide-gray-200">
-              <div className="py-8 text-base leading-6 space-y-6 text-gray-700 sm:text-lg sm:leading-7">
-                <h1 className="text-5xl font-bold text-gray-900 mb-8 hover:cursor-pointer">Welcome to Shawn App</h1>
-                <p className="text-xl text-gray-600">Your new Next.js application is ready.</p>
-                <p className="text-xl text-gray-600">Start building something amazing!</p>
-                <div className="mt-12 space-y-4">
-                  <Link href="/signin" className="block w-full text-center py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg">
-                    Sign In
-                  </Link>
-                  <Link href="/signup" className="block w-full text-center py-3 px-4 bg-white text-blue-600 rounded-lg hover:bg-gray-50 transition duration-200 shadow-md hover:shadow-lg border border-blue-200">
-                    Sign Up
-                  </Link>
-                </div>
-              </div>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Welcome to Comdity
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            The everything comedy app
+          </p>
+
+          <div className="mt-12 space-y-4">
+            <p className="text-gray-600">
+              For comedians, by comedians
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Link
+                href="/signin"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+              >
+                Sign Up
+              </Link>
             </div>
           </div>
         </div>
       </div>
-      <style jsx global>{`
-        body {
-          background-color: #FFFFFF;
-        }
-      `}</style>
     </div>
   );
 };
