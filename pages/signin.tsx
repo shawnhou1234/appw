@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { getAuthErrorMessage } from '../lib/authErrors';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import SimpleInput from '../components/SimpleInput';
@@ -23,7 +24,8 @@ const SignIn: NextPage = () => {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/recording');
     } catch (error: any) {
-      setError(error.message);
+      const errorCode = error.code;
+      setError(getAuthErrorMessage(errorCode));
     } finally {
       setLoading(false);
     }
@@ -64,7 +66,7 @@ const SignIn: NextPage = () => {
           </div>
 
           {error && (
-            <div className="text-red-500 text-sm text-center">
+            <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-lg">
               {error}
             </div>
           )}
