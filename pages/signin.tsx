@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import NotionInput from '../components/NotionInput';
+import SimpleInput from '../components/SimpleInput';
 import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const SignIn: NextPage = () => {
@@ -46,14 +46,15 @@ const SignIn: NextPage = () => {
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <NotionInput
+            <SimpleInput
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email address"
               required
+              autoFocus
             />
-            <NotionInput
+            <SimpleInput
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
