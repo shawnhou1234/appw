@@ -13,7 +13,7 @@ interface Recording {
 interface RecordingsListProps {
   recordings: Recording[];
   onDelete: (id: string) => void;
-  onPlay: (url: string) => void;
+  onPlay: (recording: Recording) => void;
   onRename: (id: string, newName: string) => void;
 }
 

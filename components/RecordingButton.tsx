@@ -1,17 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 interface RecordingButtonProps {
+  isRecording: boolean;
+  isProcessing: boolean;
   onStart: () => void;
-  onStop: (blob: Blob) => void;
-  isProcessing?: boolean;
+  onStop: () => void;
 }
 
 const RecordingButton: React.FC<RecordingButtonProps> = ({
+  isRecording,
+  isProcessing,
   onStart,
   onStop,
-  isProcessing = false,
 }) => {
-  const [isRecording, setIsRecording] = useState(false);
   const [duration, setDuration] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -65,7 +66,7 @@ const RecordingButton: React.FC<RecordingButtonProps> = ({
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        onStop(blob);
+        onStop();
         stream.getTracks().forEach(track => track.stop());
         if (audioContextRef.current) {
           audioContextRef.current.close();
@@ -77,7 +78,6 @@ const RecordingButton: React.FC<RecordingButtonProps> = ({
       };
 
       mediaRecorder.start();
-      setIsRecording(true);
       onStart();
 
       // 开始计时
@@ -93,7 +93,6 @@ const RecordingButton: React.FC<RecordingButtonProps> = ({
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
-      setIsRecording(false);
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;

@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 允许访问音频分析集合
+    match /audioAnalysis/{document} {
+      allow read, write: if true;  // 临时允许所有访问用于测试
+    }
+    
+    // 允许访问用户数据
+    match /users/{userId}/entries/{document} {
+      allow read, write: if true;  // 临时允许所有访问用于测试
+    }
+    
+    // 允许访问测试集合
+    match /test/{document=**} {
+      allow read, write: if true;
+    }
+  }
+} 
